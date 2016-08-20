@@ -1,1 +1,1 @@
-# snake-10kb
+# snake-10k

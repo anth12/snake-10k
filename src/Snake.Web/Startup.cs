@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Snake.Game;
 using Snake.Sockets;
 using WebMarkupMin.AspNetCore1;
 using WebMarkupMin.Core;
@@ -44,18 +45,7 @@ namespace Snake.Web
                 .AddHttpCompression();
 
             // Add framework services.
-            services.AddMvc(/*options =>
-            {
-                options.CacheProfiles.Add("CacheCompressedContent5Minutes",
-                    new CacheProfile
-                    {
-                        NoStore = HostingEnvironment.IsDevelopment(),
-                        Duration = 300,
-                        Location = ResponseCacheLocation.Client,
-                        VaryByHeader = "Accept-Encoding"
-                    }
-                );
-            }*/);
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +65,7 @@ namespace Snake.Web
 
             app.UseStaticFiles();
 
+            app.UseWebSockets();
             app.Use(WebSocketBroker.HandleRequest);
 
             app.UseWebMarkupMin();
@@ -85,6 +76,7 @@ namespace Snake.Web
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            GameBackgroundStateManager.Current.Start();
         }
     }
 }

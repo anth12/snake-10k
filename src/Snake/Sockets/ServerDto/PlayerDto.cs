@@ -1,8 +1,10 @@
 ﻿using System;
 using Snake.Models;
+using Snake.Sockets.Attributes;
 
 namespace Snake.Sockets.ServerDto
 {
+    [SocketCode("U")]
     public class PlayerDto : BaseServerDto
     {
         public PlayerDto(Player user)

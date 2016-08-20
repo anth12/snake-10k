@@ -1,12 +1,13 @@
 ﻿using Snake.Extensions;
 using Snake.Game;
 using Snake.Sockets.ClientDto;
+using Snake.Sockets.Handlers.Base;
 
 namespace Snake.Sockets.Handlers
 {
-    public class DirectionChangeHandler
+    public class DirectionChangeHandler : BaseSocketHandler<DirectionChange>
     {
-        public static void Handle(DirectionChange request)
+        public override void Handle(DirectionChange request)
         {
             var player = GameBackgroundStateManager.Current.Players.GetPlayer(request);
 

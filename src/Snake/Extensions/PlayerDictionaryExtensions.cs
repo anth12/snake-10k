@@ -10,9 +10,9 @@ namespace Snake.Extensions
         public static Player GetPlayer(this IDictionary<Guid, Player> dictionary, BaseClientDto request)
         {
             Player player;
-            if (dictionary.TryGetValue(request.UserId, out player))
+            if (dictionary.TryGetValue(request.User, out player))
             {
-                if (player.Token == request.UserToken)
+                if (player.Token == request.Token)
                 {
                     return player;
                 }

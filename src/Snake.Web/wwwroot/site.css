@@ -1,6 +1,10 @@
 ﻿html {
     height: 100%;
 }
+* {
+    font-family: "Courier New", Courier, monospace;
+}
+
 body {
     height: 100%;
     background: #f8bb40; /* Old browsers */
@@ -21,28 +25,53 @@ canvas {
     width: 100vw;
 }
 
-/* Setup div */
-div {
+/* Setup form */
+form {
     animation: S ease-out 1s;
     text-align: center;
 }
 
-input {
+input,
+button {
     background: none;
-    border: 1px solid white;
+    border: 1px solid #f7f7f7;
     font-size: 1.5em;
     padding: 5px;
     color: #f7f7f7;
     outline: none;
-    margin: 5px;
+    margin: 5px auto;
+    text-align: center;
+    display: block;
 }
 
     input[type=text] {
         border-width: 0 0 1px 0;
     }
+    button {
+        cursor: pointer; /* Should not be needed? */
+    }
+        button:hover, button:active {
+            background: #f7f7f7;
+            color: #f87f3e;
+        }
+
+form.X {
+    
+}
+
+/* Common */
+.x {
+    transition: 0.8s all;
+    opacity: 0;
+}
+.X {
+    display: none;
+}
+
+/* Animations */
 @keyframes S {
     0%, 40% {
-        transform: translateY(-150px);
+        transform: translateY(-120px);
         opacity: 0;
     }
     100% {
