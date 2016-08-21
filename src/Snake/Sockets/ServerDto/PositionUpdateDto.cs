@@ -7,7 +7,7 @@ using Snake.Sockets.Attributes;
 namespace Snake.Sockets.ServerDto
 {
     [SocketCode("P")]
-    public class PositionUpdate : BaseServerDto
+    public class PositionUpdateDto : BaseServerDto
     {
         public ConcurrentDictionary<Guid, List<Point>> Snakes { get; set; } = new ConcurrentDictionary<Guid, List<Point>>();
         public List<Point> LifePoints { get; set; } = new List<Point>();

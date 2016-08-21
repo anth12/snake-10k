@@ -1,4 +1,4 @@
-﻿(function (doc, win, $) {
+﻿(function (doc, win, $, addEventListener) {
 
     doc.addEventListener("DOMContentLoaded", function () {
         
@@ -12,7 +12,10 @@
         cellWidth = 2,
         cellHeight = 2;
 
-        var webSocket = new WebSocket(location.href.replace('http', 'ws'));
+        $canvas.width = doc.width;
+        $canvas.height = doc.height;
+
+        var webSocket = new WebSocket('ws://' + location.host);
 
         webSocket.onclose = webSocket.onerror = function(e) {
             alert(e);
@@ -47,12 +50,20 @@
                         }
                     }
                     break;
+
+                case 'H':
+                    /**************************************
+                    ***** Highscore update ****************
+                    ***************************************/
+                    $('table')[0].innerHTML = data.html
+
+                    break;
             }
 
         }
 
         
-        $form.addEventListener('submit', function (event) {
+        $form[addEventListener]('submit', function (event) {
             event.preventDefault()
             player.username = $username.value;
             webSocket.send('U' + prepareRequest({ username: player.username }))
@@ -73,7 +84,7 @@
             webSocket.send('S' + prepareRequest({ playing: true }))
         }
 
-        window.addEventListener('keyup', function(event) {
+        window[addEventListener]('keyup', function(event) {
             switch (event.keyCode) {
             case 27: // Esc
                 gameEnd();
@@ -82,6 +93,12 @@
                 webSocket.send('K' + prepareRequest({ code: event.keyCode }))
             }
         });
+
+        window.onresize = function(event) {
+
+            $canvas.width = doc.width;
+            $canvas.height = doc.height;
+        }
 
         function prepareRequest(data) {
             data.user = player.id
@@ -98,4 +115,4 @@
     })
 
 
-})(document, window, document.querySelectorAll.bind(document));
+})(document, window, document.querySelectorAll.bind(document), "addEventListener");

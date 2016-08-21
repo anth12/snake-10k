@@ -7,28 +7,20 @@
 
 body {
     height: 100%;
+    margin: 0;
     background: #f8bb40; /* Old browsers */
     background: -moz-linear-gradient(45deg,  #f8bb40 10%, #f8413b 65%, #423544 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(45deg,  #f8bb40 10%,#f8413b 65%,#423544 100%); /* Chrome10-25,Safari5.1-6 */
     background: linear-gradient(45deg,  #f8bb40 10%,#f8413b 65%,#423544 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8bb40', endColorstr='#423544',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
     display: flex;
-    align-items: center;
     color: #f7f7f7;
-}
-
-canvas {
-    /*position: absolute;*/
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
 }
 
 /* Setup form */
 form {
     animation: S ease-out 1s;
     text-align: center;
+    margin: auto;
 }
 
 input,
@@ -44,7 +36,7 @@ button {
     display: block;
 }
 
-    input[type=text] {
+    input {
         border-width: 0 0 1px 0;
     }
     

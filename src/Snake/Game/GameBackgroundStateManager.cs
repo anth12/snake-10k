@@ -61,7 +61,7 @@ namespace Snake.Game
                 LastPositionUpdate = DateTime.Now;
 
 
-                var renderData = new PositionUpdate();
+                var renderData = new PositionUpdateDto();
 
                 Parallel.ForEach(Players.Where(x=> x.Value.IsPlaying), (keyValue) =>
                 {
