@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using Snake.Models;
 using Snake.Sockets.Attributes;
 
 namespace Snake.Sockets.ServerDto
@@ -6,6 +9,7 @@ namespace Snake.Sockets.ServerDto
     [SocketCode("P")]
     public class PositionUpdate : BaseServerDto
     {
-        public List<SnakeDto> Snakes { get; set; }
+        public ConcurrentDictionary<Guid, List<Point>> Snakes { get; set; } = new ConcurrentDictionary<Guid, List<Point>>();
+        public List<Point> LifePoints { get; set; } = new List<Point>();
     }
 }

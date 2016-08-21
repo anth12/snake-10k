@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 using Snake.Models;
+using Snake.Sockets;
+using Snake.Sockets.ServerDto;
 
 namespace Snake.Game
 {
@@ -25,6 +27,8 @@ namespace Snake.Game
 
         public IDictionary<Guid, WebSocket> Connections = new ConcurrentDictionary<Guid, WebSocket>();
 
+        public IDictionary<Guid, Point> Lives = new ConcurrentDictionary<Guid, Point>();
+
         #endregion
 
         public void Start()
@@ -32,8 +36,10 @@ namespace Snake.Game
             GameBoard = new GameBoard
             {
                 Id = Guid.NewGuid(),
-                Height = 1500,
-                Width = 1500
+                Height = 500,
+                Width = 500,
+                Velocity = 350,
+                IsActive = true
             };
 
             // Start the background threads
@@ -47,18 +53,24 @@ namespace Snake.Game
         {
             while (GameBoard.IsActive)
             {
-                if (LastPositionUpdate <= DateTime.Now.AddMilliseconds(-GameBoard.Velocity))
+                if (DateTime.Now.AddMilliseconds(-GameBoard.Velocity) < LastPositionUpdate)
                 {
                     continue;
                 }
+
                 LastPositionUpdate = DateTime.Now;
 
-                Parallel.ForEach(Players, (keyValue) =>
+
+                var renderData = new PositionUpdate();
+
+                Parallel.ForEach(Players.Where(x=> x.Value.IsPlaying), (keyValue) =>
                 {
                     var snake = keyValue.Value.Snake;
 
-                    // Move the head to th body
-                    snake.Body.RemoveAt(0);
+                    // Move the head to the body
+                    if(snake.Body.Count >= snake.Length)
+                        snake.Body.RemoveAt(0);
+
                     snake.Body.Add(snake.HeadPoint);
 
                     // Update the direction
@@ -69,9 +81,23 @@ namespace Snake.Game
                     }
 
                     // Create the new head position
-                    snake.HeadPoint = snake.HeadPoint.Move(snake.Direction).Constrain(GameBoard.Width, GameBoard.Height);
+                    snake.HeadPoint = snake.HeadPoint
+                            .Move(snake.Direction)
+                            .Constrain(GameBoard.Width, GameBoard.Height);
+
+                    if (!renderData.Snakes.TryAdd(keyValue.Key, snake.Body))
+                    {
+                        // TODO handle errors
+                    }
                 });
                 
+                // Map the client data
+                renderData.LifePoints = Lives.Select(l => l.Value).ToList();
+
+
+                #pragma warning disable 4014
+                WebSocketBroker.BroadcastAllActive(renderData);
+                #pragma warning restore 4014
             }
         }
 

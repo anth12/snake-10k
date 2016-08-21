@@ -15,8 +15,9 @@ namespace Snake.Sockets.Handlers
             
             // Spawn the player at a random position
             var rand = new Random();
-            user.Snake.HeadPoint.X = rand.Next(0, GameBackgroundStateManager.Current.GameBoard.Width);
-            user.Snake.HeadPoint.Y = rand.Next(0, GameBackgroundStateManager.Current.GameBoard.Height);
+             // TODO
+            //user.Snake.HeadPoint.X = rand.Next(0, GameBackgroundStateManager.Current.GameBoard.Width);
+            //user.Snake.HeadPoint.Y = rand.Next(0, GameBackgroundStateManager.Current.GameBoard.Height);
 
 
             GameBackgroundStateManager.Current.Players.Add(user.Id, user);

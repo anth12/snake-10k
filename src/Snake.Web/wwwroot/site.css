@@ -47,6 +47,7 @@ button {
     input[type=text] {
         border-width: 0 0 1px 0;
     }
+    
     button {
         cursor: pointer; /* Should not be needed? */
     }

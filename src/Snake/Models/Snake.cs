@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Snake.Models.Enum;
 
 namespace Snake.Models
@@ -11,6 +10,6 @@ namespace Snake.Models
         public Direction Direction { get; set; }
         
         public List<Direction> DirectionQueue { get; set; } = new List<Direction>();
-        public int Length { get; set; }
+        public int Length { get; set; } = 4;
     }
 }

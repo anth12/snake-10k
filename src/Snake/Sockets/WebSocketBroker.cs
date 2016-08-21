@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
@@ -11,7 +12,6 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Snake.Game;
 using Snake.Sockets.Attributes;
-using Snake.Sockets.ClientDto;
 using Snake.Sockets.Handlers;
 using Snake.Sockets.ServerDto;
 
@@ -24,7 +24,8 @@ namespace Snake.Sockets
             SocketHandlers = new Dictionary<string, ISocketHandler>
             {
                 { "U", new UsernameChangeHandler() },
-                { "D", new DirectionChangeHandler() }
+                { "K", new KeyPressHandler() },
+                { "S", new UserStatusChangeHandler() }
             };
         }
 
@@ -86,26 +87,46 @@ namespace Snake.Sockets
         internal static async Task Broadcast<TData>(WebSocket socket, TData data)
             where TData : BaseServerDto
         {
-            if (socket != null && socket.State == WebSocketState.Open)
-            {
-                var message = SerializeObject(data);
-
-                var buffer = new ArraySegment<Byte>(Encoding.UTF8.GetBytes(message));
-                await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
-            }
-
+            await Broadcast(
+                new [] { socket },
+                data
+            );
         }
 
         internal static async Task BroadcastAll<TData>(TData data)
             where TData : BaseServerDto
         {
-            foreach (var socket in GameBackgroundStateManager.Current.Connections)
+            await Broadcast(
+                GameBackgroundStateManager.Current.Connections.Select(c => c.Value), 
+                data
+            );
+        }
+
+        internal static async Task BroadcastAllActive<TData>(TData data)
+            where TData : BaseServerDto
+        {
+            var activeIds = GameBackgroundStateManager.Current.Players
+                                    .Where(p => p.Value.IsPlaying)
+                                    .Select(x=> x.Key);
+
+            await Broadcast(
+                GameBackgroundStateManager.Current.Connections
+                    .Where(x=> activeIds.Contains(x.Key))
+                    .Select(c => c.Value),
+                data
+            );
+        }
+
+        internal static async Task Broadcast<TData>(IEnumerable<WebSocket> sockets, TData data)
+            where TData : BaseServerDto
+        {
+            foreach (var socket in sockets)
             {
-                if (socket.Value != null && socket.Value.State == WebSocketState.Open)
+                if (socket != null && socket.State == WebSocketState.Open)
                 {
                     var message = SerializeObject(data);
                     var buffer = new ArraySegment<Byte>(Encoding.UTF8.GetBytes(message));
-                    await socket.Value.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                    await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
                 }
             }
         }

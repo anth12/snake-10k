@@ -1,5 +1,6 @@
 ﻿using System;
 using Snake.Models;
+using Snake.Models.Enum;
 
 namespace Snake.Services
 {
@@ -17,7 +18,11 @@ namespace Snake.Services
             return new Player
             {
                 Username = name,
-                Snake = new Models.Snake()
+                Snake = new Models.Snake
+                {
+                    HeadPoint = new Point(0, 0), // TODO
+                    Direction = Direction.Right
+                }
             };
         }
     }
