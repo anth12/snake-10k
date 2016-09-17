@@ -36,9 +36,9 @@ namespace Snake.Game
             GameBoard = new GameBoard
             {
                 Id = Guid.NewGuid(),
-                Height = 500,
-                Width = 500,
-                Velocity = 350,
+                Height = 5000,
+                Width = 5000,
+                Velocity = 200,
                 IsActive = true
             };
 

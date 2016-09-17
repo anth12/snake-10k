@@ -44,6 +44,7 @@ namespace Snake.Sockets.Handlers
     </tr>
 </head>";
 
+            // TODO Cannot load only active players- once the exit they are no longer in the current dictionary
             GameBackgroundStateManager.Current.Players
                 .Select(x => x.Value)
                 .OrderByDescending(p => p.HighScore)

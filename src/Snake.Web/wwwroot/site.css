@@ -14,6 +14,7 @@ body {
     background: linear-gradient(45deg,  #f8bb40 10%,#f8413b 65%,#423544 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     display: flex;
     color: #f7f7f7;
+    overflow: hidden;
 }
 
 /* Setup form */
@@ -48,10 +49,11 @@ button {
             color: #f87f3e;
         }
 
-form.X {
-    
+canvas {
+    position: absolute;
+    transition: 0.5s all;
 }
-
+s
 /* Common */
 .x {
     transition: 0.8s all;

@@ -3,17 +3,18 @@
     doc.addEventListener("DOMContentLoaded", function () {
         
         var player,
-        $username = $('#U')[0],
-        $start = $('#S')[0],
-        $form = $('form')[0]
-        $canvas = $('canvas')[0],
-        context = $canvas.getContext('2d'),
-        
-        cellWidth = 2,
-        cellHeight = 2;
+            $username = $('#U')[0],
+            $start = $('#S')[0],
+            $form = $('form')[0]
+            $canvas = $('canvas')[0],
+            context = $canvas.getContext('2d'),
+            cellWidth = 10,
+            cellHeight = 10,
+            gameWidth = 5000,
+            gameHeight = 5000;
 
-        $canvas.width = doc.width;
-        $canvas.height = doc.height;
+        $canvas.height = gameHeight;
+        $canvas.width = gameWidth;
 
         var webSocket = new WebSocket('ws://' + location.host);
 
@@ -22,9 +23,11 @@
         }
 
         webSocket.onmessage = function (response) {
-            var data = JSON.parse(response.data.substring(1, response.data.length));
+            var responseData = response.data;
+
+            var data = JSON.parse(responseData.slice(1));
             
-            switch (response.data.substring(0, 1)) {
+            switch (response.data[0]) {
                 case 'U':
                     /**************************************
                     ***** Username changed ****************
@@ -38,14 +41,27 @@
                     /**************************************
                     ***** Draw the canvas *****************
                     ***************************************/
-                    context.clearRect(0, 0, $canvas.height, $canvas.width);
-
+                    context.clearRect(0, 0, $canvas.width, $canvas.height);
+                    
                     for (var id in data.snakes) {
 
-                        context.fillStyle = id == player.id ? '#666' : '#fff';
+                        var snake = data.snakes[id];
 
-                        for (var index in data.snakes[id]) {
-                            var point = data.snakes[id][index]
+                        context.fillStyle = '#9e9e9e';
+
+                        if (id == player.id) {
+                            context.fillStyle = '#3f51b5';
+
+                            var head = snake[snake.length -1]; // Or slice(-1)[0]
+                            var sectionX = Math.floor((head.x * cellWidth) / window.innerWidth)
+                            var sectionY = Math.floor((head.y * cellHeight) / window.innerHeight)
+
+                            $canvas.style.marginTop = -window.innerHeight * sectionY + "px";
+                            $canvas.style.marginLeft = -window.innerWidth * sectionX + "px";
+                        }
+
+                        for (var index in snake) {
+                            var point = snake[index]
                             context.fillRect(point.x * cellWidth, point.y * cellHeight, cellWidth, cellHeight);
                         }
                     }
@@ -93,12 +109,6 @@
                 webSocket.send('K' + prepareRequest({ code: event.keyCode }))
             }
         });
-
-        window.onresize = function(event) {
-
-            $canvas.width = doc.width;
-            $canvas.height = doc.height;
-        }
 
         function prepareRequest(data) {
             data.user = player.id
